@@ -25,6 +25,8 @@ public:
 	static std::map<std::string, unsigned int> Texture2Ds;
 	static unsigned int LoadTexture(char const * path, std::string name);
 	static unsigned int GetTexture(std::string name);
+	static unsigned int loadCubemap(vector<std::string> faces, std::string name);
+
 private:
 	ResourceManager() { }
 	static Shader loadShaderFromFile(const char *vShaderFile, const char *fShaderFile, const char *gShaderFile = nullptr);

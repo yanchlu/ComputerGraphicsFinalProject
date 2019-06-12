@@ -20,6 +20,26 @@ void Controller::Init()
 	// 加载阴影深度着色器
 	ResourceManager::LoadShader("./resources/shaders/shader_depth.vs", "./resources/shaders/shader_depth.fs", nullptr, "simpleLightShader");
 
+	// 加载天空盒的着色器
+	Shader skyboxShader = ResourceManager::LoadShader("./resources/shaders/skybox.vs", "./resources/shaders/skybox.fs", nullptr,"skyboxShader");
+	skyboxShader.use();
+	skyboxShader.setInt("skybox", 0);
+
+	Skybox skybox(glm::vec3(0));
+	mainskybox = skybox;
+	mainskybox.initSkybox();
+	// 加载天空盒
+	vector<std::string> faces
+	{
+		"resources/textures/ely_hills/right.tga",
+		"resources/textures/ely_hills/left.tga",
+		"resources/textures/ely_hills/top.tga",
+		"resources/textures/ely_hills/bottom.tga",
+		"resources/textures/ely_hills/front.tga",
+		"resources/textures/ely_hills/back.tga"
+	};
+	ResourceManager::loadCubemap(faces,"skybox");
+
 	// 加载材质，第二个参数是材质的名字
 	ResourceManager::LoadTexture("./resources/textures/wood.png","wood");
 	ResourceManager::LoadTexture("./resources/textures/glass.jpg", "glass");
@@ -161,4 +181,21 @@ void Controller::Render()
 	{
 		Models[i].Draw(shader);
 	}
+
+	// 渲染天空盒
+	// draw skybox as last
+	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+	Shader skyboxShader = ResourceManager::GetShader("skyboxShader");
+	skyboxShader.use();
+	view = glm::mat4(glm::mat3(maincamera.GetViewMatrix())); // remove translation from the view matrix
+	skyboxShader.setMat4("view", view);
+	skyboxShader.setMat4("projection", projection);
+	// skybox cube
+	mainskybox.BindVertexArray();
+	//glBindVertexArray(skyboxVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, ResourceManager::GetTexture("skybox"));
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthFunc(GL_LESS); // set depth function back to default
 }

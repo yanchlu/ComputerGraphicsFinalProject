@@ -6,6 +6,7 @@
 #include "ResourceManager.h"
 #include "BasicObject.h"
 #include "Model.h"
+#include "Skybox.h"
 class Controller
 {
 public:
@@ -25,6 +26,8 @@ public:
 	Light mainlight;
 	// 摄像机
 	Camera maincamera;
+	// 天空盒
+	Skybox mainskybox;
 	// 屏幕的高宽
 	unsigned int SCR_WIDTH;
 	unsigned int SCR_HEIGHT;
