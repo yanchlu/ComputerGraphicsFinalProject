@@ -1,4 +1,4 @@
-# ComputerGraphicsFinalProject
+﻿# ComputerGraphicsFinalProject
 ComputerGraphicsFinalProject
 
 - 文件目录
@@ -8,6 +8,7 @@ ComputerGraphicsFinalProject
       --- objects 存放项目的模型
       --- shaders 存放项目的着色器glsl
       --- textures 存放项目的纹理
+      --- fonts 存放项目用到的字体
 - doc 存放项目文档
 - src 存放项目代码以及库
   --- code 存放项目代码
@@ -28,5 +29,8 @@ Model 模型类，拥有很多网格以及纹理信息，可以进行渲染
 ResourceManager 资源管理类，对着色器，模型，纹理进行加载与管理
 Shader 着色器类，可以对属性进行设置
 Skybox 天空盒类
-
+Text 文字类
 ``
+
+- 调试
+> 使用 Visual Studio 2017 的 Debug X86

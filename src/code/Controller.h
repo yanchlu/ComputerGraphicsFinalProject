@@ -7,6 +7,8 @@
 #include "BasicObject.h"
 #include "Model.h"
 #include "Skybox.h"
+#include "Text.h"
+
 class Controller
 {
 public:
@@ -28,6 +30,8 @@ public:
 	Camera maincamera;
 	// 天空盒
 	Skybox mainskybox;
+	// 字体
+	Text maintext;
 	// 屏幕的高宽
 	unsigned int SCR_WIDTH;
 	unsigned int SCR_HEIGHT;

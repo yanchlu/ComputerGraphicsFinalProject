@@ -14,7 +14,10 @@
 #include <iostream>
 #include "Controller.h"
 
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+// 处理鼠标点击事件
+void mousepress_callback(GLFWwindow* window, int button, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
@@ -26,9 +29,11 @@ const unsigned int SCR_HEIGHT = 720;
 
 // 第一次窗口出现鼠标
 bool firstMouse = true;
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
-
+float lastX;
+float lastY;
+float xoffset;
+float yoffset;
+bool leftMousePress = false;
 // 计算间隔的时间
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -58,10 +63,14 @@ int main()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetMouseButtonCallback(window, mousepress_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+	
+	// 鼠标滑轮缩放
+	//glfwSetScrollCallback(window, scroll_callback);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// 是否显示鼠标
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// 加载glad
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -72,6 +81,10 @@ int main()
 
 	// 开启深度测试
 	glEnable(GL_DEPTH_TEST);
+
+	// 启用混合
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// 初始化控制器
 	MainController.Init();
@@ -97,7 +110,6 @@ int main()
 		// 进行渲染
 		MainController.Render();
 	
-
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -131,7 +143,17 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
-
+void mousepress_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		leftMousePress = true;
+	}
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+	{
+		leftMousePress = false;
+	}
+}
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (firstMouse)
@@ -139,19 +161,23 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		lastX = xpos;
 		lastY = ypos;
 		firstMouse = false;
+		xoffset = 0;
+		yoffset = 0;
 	}
+	else
+	{
+		xoffset = xpos - lastX;
+		yoffset = lastY - ypos;
 
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; 
-
-	lastX = xpos;
-	lastY = ypos;
-
-	MainController.maincamera.ProcessMouseMovement(xoffset, yoffset);
+		lastX = xpos;
+		lastY = ypos;	
+		// 按下左键的时候更新视角
+		if(leftMousePress)
+			MainController.maincamera.ProcessMouseMovement(xoffset, yoffset);
+	}
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	MainController.maincamera.ProcessMouseScroll(yoffset);
 }
-

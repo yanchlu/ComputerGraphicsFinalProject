@@ -84,6 +84,17 @@ void Controller::Init()
 	// 创建光源
 	Light light(1024,1024, glm::vec3(-2.0f, 4.0f, -1.0f));
 	mainlight = light;
+
+
+	// 加载字体着色器
+	Shader shader = ResourceManager::LoadShader("./resources/shaders/text.vs", "./resources/shaders/text.fs", nullptr, "text");
+	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCR_WIDTH), 0.0f, static_cast<GLfloat>(SCR_HEIGHT));
+	shader.use();
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	// 加载英文字体
+	Text text(SCR_WIDTH, SCR_HEIGHT);
+	maintext = text;
+	maintext.InitText();
 }
 // 处理键盘事件
 void Controller::ProcessKeyboradInput()
@@ -104,6 +115,7 @@ void Controller::Update()
 // 渲染物体
 void Controller::Render()
 {
+	// --------------------------------------对场景中物体进行光空间转换-----------------------------
 	// 首先计算光的深度图
 	mainlight.Render(ResourceManager::GetShader("simpleLightShader"));
 	glViewport(0, 0, mainlight.SHADOW_WIDTH, mainlight.SHADOW_HEIGHT);
@@ -141,6 +153,7 @@ void Controller::Render()
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// --------------------------------------对场景中物体进行渲染-----------------------------
 	// 对场景着色器进行渲染
 	Shader shader = ResourceManager::GetShader("objShader");
 	ResourceManager::GetShader("objShader").use();
@@ -182,7 +195,7 @@ void Controller::Render()
 		Models[i].Draw(shader);
 	}
 
-	// 渲染天空盒
+	// -------------------------------渲染天空盒-------------------------------------------------------
 	// draw skybox as last
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	Shader skyboxShader = ResourceManager::GetShader("skyboxShader");
@@ -198,4 +211,11 @@ void Controller::Render()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS); // set depth function back to default
+
+
+
+	// --------------------------------显示英文------------------------------------------------------------------
+	Shader text = ResourceManager::GetShader("text");
+	maintext.RenderText(text, "Use W/A/S/D to move view", 25.0f, 60.0, 0.55f, glm::vec3(0.65f, 0.91f, 0.62f));
+	maintext.RenderText(text, "Press mouse left to rotate view", 25.0f, 25.0, 0.55f, glm::vec3(0.65f, 0.91f, 0.62f));
 }
