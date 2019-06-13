@@ -1,4 +1,4 @@
-#ifndef CONTROLLER_H
+ï»¿#ifndef CONTROLLER_H
 #define CONTROLLER_H
 #include "Camera.h"
 #include "BasicObject.h"
@@ -13,26 +13,26 @@ class Controller
 {
 public:
 	Controller(int width, int height);
-	// ¼ÓÔØ×ÅÉ«Æ÷×ÊÔ´µÈ
+	// åŠ è½½ç€è‰²å™¨èµ„æºç­‰
 	void Init();
-	// ´¦Àí¼üÅÌÊÂ¼ş
+	// å¤„ç†é”®ç›˜äº‹ä»¶
 	void ProcessKeyboradInput();
-	// ´¦ÀíÊó±êÊÂ¼ş
+	// å¤„ç†é¼ æ ‡äº‹ä»¶
 	void ProcessMouseInput();
-	// ¸üĞÂ³¡¾°ÖĞµÄÎïÌå
+	// æ›´æ–°åœºæ™¯ä¸­çš„ç‰©ä½“
 	void Update();
-	// äÖÈ¾ÎïÌå
+	// æ¸²æŸ“ç‰©ä½“
 	void Render();
 
-	// ¹ÜÀí¹âÔ´
+	// ç®¡ç†å…‰æº
 	Light mainlight;
-	// ÉãÏñ»ú
+	// æ‘„åƒæœº
 	Camera maincamera;
-	// Ìì¿ÕºĞ
+	// å¤©ç©ºç›’
 	Skybox mainskybox;
-	// ×ÖÌå
+	// å­—ä½“
 	Text maintext;
-	// ÆÁÄ»µÄ¸ß¿í
+	// å±å¹•çš„é«˜å®½
 	unsigned int SCR_WIDTH;
 	unsigned int SCR_HEIGHT;
 	

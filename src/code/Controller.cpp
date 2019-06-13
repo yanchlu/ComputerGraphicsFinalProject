@@ -1,4 +1,4 @@
-#include "Controller.h"
+ï»¿#include "Controller.h"
 
 
 Controller::Controller(int width, int height)
@@ -6,21 +6,21 @@ Controller::Controller(int width, int height)
 	SCR_WIDTH = width;
 	SCR_HEIGHT = height;
 }
-// ¼ÓÔØ×ÅÉ«Æ÷×ÊÔ´µÈ
+// åŠ è½½ç€è‰²å™¨èµ„æºç­‰
 void Controller::Init()
 {
-	// ¼ÓÔØ×ÅÉ«Æ÷,µÚËÄ¸ö²ÎÊıÊÇshaderµÄÃû×Ö
+	// åŠ è½½ç€è‰²å™¨,ç¬¬å››ä¸ªå‚æ•°æ˜¯shaderçš„åå­—
 	Shader objShader = ResourceManager::LoadShader("./resources/shaders/shader.vs", "./resources/shaders/shader.fs",nullptr,"objShader");
 	
-	// ÉèÖÃÎïÌå×ÅÉ«Æ÷µÄ²ÎÊı
+	// è®¾ç½®ç‰©ä½“ç€è‰²å™¨çš„å‚æ•°
 	objShader.use();
 	objShader.setInt("texture_diffuse1", 0);
 	objShader.setInt("shadowMap", 1);
 
-	// ¼ÓÔØÒõÓ°Éî¶È×ÅÉ«Æ÷
+	// åŠ è½½é˜´å½±æ·±åº¦ç€è‰²å™¨
 	ResourceManager::LoadShader("./resources/shaders/shader_depth.vs", "./resources/shaders/shader_depth.fs", nullptr, "simpleLightShader");
 
-	// ¼ÓÔØÌì¿ÕºĞµÄ×ÅÉ«Æ÷
+	// åŠ è½½å¤©ç©ºç›’çš„ç€è‰²å™¨
 	Shader skyboxShader = ResourceManager::LoadShader("./resources/shaders/skybox.vs", "./resources/shaders/skybox.fs", nullptr,"skyboxShader");
 	skyboxShader.use();
 	skyboxShader.setInt("skybox", 0);
@@ -28,7 +28,7 @@ void Controller::Init()
 	Skybox skybox(glm::vec3(0));
 	mainskybox = skybox;
 	mainskybox.initSkybox();
-	// ¼ÓÔØÌì¿ÕºĞ
+	// åŠ è½½å¤©ç©ºç›’
 	vector<std::string> faces
 	{
 		"resources/textures/ely_hills/right.tga",
@@ -40,11 +40,11 @@ void Controller::Init()
 	};
 	ResourceManager::loadCubemap(faces,"skybox");
 
-	// ¼ÓÔØ²ÄÖÊ£¬µÚ¶ş¸ö²ÎÊıÊÇ²ÄÖÊµÄÃû×Ö
+	// åŠ è½½æè´¨ï¼Œç¬¬äºŒä¸ªå‚æ•°æ˜¯æè´¨çš„åå­—
 	ResourceManager::LoadTexture("./resources/textures/wood.png","wood");
 	ResourceManager::LoadTexture("./resources/textures/glass.jpg", "glass");
 
-	// ¼ÓÔØÄ£ĞÍ 
+	// åŠ è½½æ¨¡å‹ 
 	Model nano = ResourceManager::LoadModel("./resources/objects/NOVELO_SHEEP/NOVELO_SHEEP.obj","sheep");
 	nano.Position = glm::vec3(-3.0f, 0.0f, -2.0f);
 	nano.Size = glm::vec3(0.003f);
@@ -56,67 +56,67 @@ void Controller::Init()
 	Models.push_back(nano);
 
 
-	// ÉèÖÃÉãÏñ»úÎ»ÖÃ
+	// è®¾ç½®æ‘„åƒæœºä½ç½®
 	Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 	maincamera = camera;
 
 
-	// ´´½¨Ò»¸öÆ½µØ
+	// åˆ›å»ºä¸€ä¸ªå¹³åœ°
 	BasicObject plane(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 	plane.initPlaneVertices();
 	Planes.push_back(plane);
 
-	// ´´½¨Ò»¸öºĞ×Ó
+	// åˆ›å»ºä¸€ä¸ªç›’å­
 	BasicObject box1(glm::vec3(0.0f, 1.5f, 0.0), 0.0f, glm::vec3(0.5f));
 	box1.initCubeVertices();
 	Boxs.push_back(box1);
 
-	// ´´½¨Ò»¸öºĞ×Ó
+	// åˆ›å»ºä¸€ä¸ªç›’å­
 	BasicObject box2(glm::vec3(2.0f, 0.0f, 1.0), 0.0f, glm::vec3(0.5f));
 	box2.initCubeVertices();
 	Boxs.push_back(box2);
 
-	// ´´½¨Ò»¸öºĞ×Ó
+	// åˆ›å»ºä¸€ä¸ªç›’å­
 	BasicObject box3(glm::vec3(-1.0f, 0.0f, 2.0), glm::radians(60.0f), glm::vec3(0.25f));
 	box3.initCubeVertices();
 	Boxs.push_back(box3);
 
-	// ´´½¨¹âÔ´
+	// åˆ›å»ºå…‰æº
 	Light light(1024,1024, glm::vec3(-2.0f, 4.0f, -1.0f));
 	mainlight = light;
 
 
-	// ¼ÓÔØ×ÖÌå×ÅÉ«Æ÷
+	// åŠ è½½å­—ä½“ç€è‰²å™¨
 	Shader shader = ResourceManager::LoadShader("./resources/shaders/text.vs", "./resources/shaders/text.fs", nullptr, "text");
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCR_WIDTH), 0.0f, static_cast<GLfloat>(SCR_HEIGHT));
 	shader.use();
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-	// ¼ÓÔØÓ¢ÎÄ×ÖÌå
+	// åŠ è½½è‹±æ–‡å­—ä½“
 	Text text(SCR_WIDTH, SCR_HEIGHT);
 	maintext = text;
 	maintext.InitText();
 }
-// ´¦Àí¼üÅÌÊÂ¼ş
+// å¤„ç†é”®ç›˜äº‹ä»¶
 void Controller::ProcessKeyboradInput()
 {
 
 }
-// ´¦ÀíÊó±êÊÂ¼ş
+// å¤„ç†é¼ æ ‡äº‹ä»¶
 void Controller::ProcessMouseInput()
 {
 
 }
 
-// ¸üĞÂ³¡¾°ÖĞµÄÎïÌå
+// æ›´æ–°åœºæ™¯ä¸­çš„ç‰©ä½“
 void Controller::Update()
 {
 
 }
-// äÖÈ¾ÎïÌå
+// æ¸²æŸ“ç‰©ä½“
 void Controller::Render()
 {
-	// --------------------------------------¶Ô³¡¾°ÖĞÎïÌå½øĞĞ¹â¿Õ¼ä×ª»»-----------------------------
-	// Ê×ÏÈ¼ÆËã¹âµÄÉî¶ÈÍ¼
+	// --------------------------------------å¯¹åœºæ™¯ä¸­ç‰©ä½“è¿›è¡Œå…‰ç©ºé—´è½¬æ¢-----------------------------
+	// é¦–å…ˆè®¡ç®—å…‰çš„æ·±åº¦å›¾
 	mainlight.Render(ResourceManager::GetShader("simpleLightShader"));
 	glViewport(0, 0, mainlight.SHADOW_WIDTH, mainlight.SHADOW_HEIGHT);
 	mainlight.BindFramebuffer();
@@ -124,7 +124,7 @@ void Controller::Render()
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, ResourceManager::GetTexture("glass"));
-	// ½«Æ½Ãæ×ª»»µ½¹â¿Õ¼ä
+	// å°†å¹³é¢è½¬æ¢åˆ°å…‰ç©ºé—´
 	for (int i = 0; i < Planes.size(); i++)
 	{
 		Planes[i].Render(ResourceManager::GetShader("simpleLightShader"));
@@ -134,7 +134,7 @@ void Controller::Render()
 	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, ResourceManager::GetTexture("wood"));
-	// ½«ºĞ×Ó×ª»»µ½¹â¿Õ¼ä
+	// å°†ç›’å­è½¬æ¢åˆ°å…‰ç©ºé—´
 	for (int i = 0; i < Boxs.size(); i++)
 	{
 		Boxs[i].Render(ResourceManager::GetShader("simpleLightShader"));
@@ -143,25 +143,25 @@ void Controller::Render()
 		glBindVertexArray(0);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	// ½«Ä£ĞÍ×ª»»µ½¹â¿Õ¼ä
+	// å°†æ¨¡å‹è½¬æ¢åˆ°å…‰ç©ºé—´
 	for (int i = 0; i < Models.size(); i++)
 	{
 		Models[i].Draw(ResourceManager::GetShader("simpleLightShader"));
 	}
 
-	// ÖØÖÃÊÓ¿Ú
+	// é‡ç½®è§†å£
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// --------------------------------------¶Ô³¡¾°ÖĞÎïÌå½øĞĞäÖÈ¾-----------------------------
-	// ¶Ô³¡¾°×ÅÉ«Æ÷½øĞĞäÖÈ¾
+	// --------------------------------------å¯¹åœºæ™¯ä¸­ç‰©ä½“è¿›è¡Œæ¸²æŸ“-----------------------------
+	// å¯¹åœºæ™¯ç€è‰²å™¨è¿›è¡Œæ¸²æŸ“
 	Shader shader = ResourceManager::GetShader("objShader");
 	ResourceManager::GetShader("objShader").use();
 	glm::mat4 projection = glm::perspective(glm::radians(maincamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 	glm::mat4 view = maincamera.GetViewMatrix();
 	shader.setMat4("projection", projection);
 	shader.setMat4("view", view);
-	// ÉèÖÃ¹âµÄ²ÎÊı
+	// è®¾ç½®å…‰çš„å‚æ•°
 	shader.setVec3("viewPos", maincamera.Position);
 	shader.setVec3("lightPos", mainlight.lightPos);
 	shader.setMat4("lightSpaceMatrix", mainlight.lightSpaceMatrix);
@@ -171,7 +171,7 @@ void Controller::Render()
 	glActiveTexture(GL_TEXTURE1);
 	mainlight.BindTexture();
 
-	//½øĞĞÕæÕıµÄäÖÈ¾
+	//è¿›è¡ŒçœŸæ­£çš„æ¸²æŸ“
 	for (int i = 0; i < Planes.size(); i++)
 	{
 		Planes[i].Render(shader);
@@ -195,7 +195,7 @@ void Controller::Render()
 		Models[i].Draw(shader);
 	}
 
-	// -------------------------------äÖÈ¾Ìì¿ÕºĞ-------------------------------------------------------
+	// -------------------------------æ¸²æŸ“å¤©ç©ºç›’-------------------------------------------------------
 	// draw skybox as last
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	Shader skyboxShader = ResourceManager::GetShader("skyboxShader");
@@ -214,8 +214,8 @@ void Controller::Render()
 
 
 
-	// --------------------------------ÏÔÊ¾Ó¢ÎÄ------------------------------------------------------------------
+	// --------------------------------æ˜¾ç¤ºæ–‡å­—------------------------------------------------------------------
 	Shader text = ResourceManager::GetShader("text");
-	maintext.RenderText(text, "Use W/A/S/D to move view", 25.0f, 60.0, 0.55f, glm::vec3(0.65f, 0.91f, 0.62f));
-	maintext.RenderText(text, "Press mouse left to rotate view", 25.0f, 25.0, 0.55f, glm::vec3(0.65f, 0.91f, 0.62f));
+	maintext.RenderText(text, L"æŒ‰ä¸‹ W/A/S/D é”®å¼€å§‹æ¼«æ¸¸", 25.0f, 62.0, 0.6f, glm::vec3(0.968f, 0.917f, 0.639f));
+	maintext.RenderText(text, L"æ‹–åŠ¨é¼ æ ‡è¿›è¡Œè§†è§’ç§»åŠ¨", 25.0f, 25.0, 0.6f, glm::vec3(0.968f, 0.917f, 0.639f));
 }

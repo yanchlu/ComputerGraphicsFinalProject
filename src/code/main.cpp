@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+ï»¿#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
@@ -16,34 +16,34 @@
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-// ´¦ÀíÊó±êµã»÷ÊÂ¼ş
+// å¤„ç†é¼ æ ‡ç‚¹å‡»äº‹ä»¶
 void mousepress_callback(GLFWwindow* window, int button, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
 
-// ÉèÖÃ´°¿Ú´óĞ¡
+// è®¾ç½®çª—å£å¤§å°
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
-// µÚÒ»´Î´°¿Ú³öÏÖÊó±ê
+// ç¬¬ä¸€æ¬¡çª—å£å‡ºç°é¼ æ ‡
 bool firstMouse = true;
 float lastX;
 float lastY;
 float xoffset;
 float yoffset;
 bool leftMousePress = false;
-// ¼ÆËã¼ä¸ôµÄÊ±¼ä
+// è®¡ç®—é—´éš”çš„æ—¶é—´
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-// Ö÷ÒªµÄ¿ØÖÆÆ÷
+// ä¸»è¦çš„æ§åˆ¶å™¨
 Controller MainController(SCR_WIDTH, SCR_HEIGHT);
 
 int main()
 {
-	// glfwµÄ³õÊ¼»¯
+	// glfwçš„åˆå§‹åŒ–
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -53,7 +53,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
-	// glfw´´½¨´°¿Ú
+	// glfwåˆ›å»ºçª—å£
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "FinalProject", NULL, NULL);
 	if (window == NULL)
 	{
@@ -66,40 +66,40 @@ int main()
 	glfwSetMouseButtonCallback(window, mousepress_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	
-	// Êó±ê»¬ÂÖËõ·Å
+	// é¼ æ ‡æ»‘è½®ç¼©æ”¾
 	//glfwSetScrollCallback(window, scroll_callback);
 
-	// ÊÇ·ñÏÔÊ¾Êó±ê
+	// æ˜¯å¦æ˜¾ç¤ºé¼ æ ‡
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	// ¼ÓÔØglad
+	// åŠ è½½glad
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
 
-	// ¿ªÆôÉî¶È²âÊÔ
+	// å¼€å¯æ·±åº¦æµ‹è¯•
 	glEnable(GL_DEPTH_TEST);
 
-	// ÆôÓÃ»ìºÏ
+	// å¯ç”¨æ··åˆ
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// ³õÊ¼»¯¿ØÖÆÆ÷
+	// åˆå§‹åŒ–æ§åˆ¶å™¨
 	MainController.Init();
 
 	while (!glfwWindowShouldClose(window))
 	{
-		// ¼ÆËãÃ¿Ö¡µÄÊ±¼ä
+		// è®¡ç®—æ¯å¸§çš„æ—¶é—´
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-		// ¶ÔÍâ²¿ÊäÈë½øĞĞ´¦Àí
+		// å¯¹å¤–éƒ¨è¾“å…¥è¿›è¡Œå¤„ç†
 		processInput(window);
 
-		// ½øĞĞÊôĞÔµÄ¸üĞÂ
+		// è¿›è¡Œå±æ€§çš„æ›´æ–°
 		MainController.Update();
 
 
@@ -107,7 +107,7 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// ½øĞĞäÖÈ¾
+		// è¿›è¡Œæ¸²æŸ“
 		MainController.Render();
 	
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -115,14 +115,14 @@ int main()
 		glfwPollEvents();
 	}
 
-	// Òª¶Ô×ÊÔ´½øĞĞÊÍ·Å
+	// è¦å¯¹èµ„æºè¿›è¡Œé‡Šæ”¾
 
 	glfwTerminate();
 	return 0;
 }
 
 
-// ÉãÏñ»úµÄË®Æ½ÒÆ¶¯
+// æ‘„åƒæœºçš„æ°´å¹³ç§»åŠ¨
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -171,7 +171,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 		lastX = xpos;
 		lastY = ypos;	
-		// °´ÏÂ×ó¼üµÄÊ±ºò¸üĞÂÊÓ½Ç
+		// æŒ‰ä¸‹å·¦é”®çš„æ—¶å€™æ›´æ–°è§†è§’
 		if(leftMousePress)
 			MainController.maincamera.ProcessMouseMovement(xoffset, yoffset);
 	}
