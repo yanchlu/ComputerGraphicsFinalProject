@@ -6,6 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
 
 #include "Shader.h"
 #include "Camera.h"
@@ -21,6 +24,11 @@ void mousepress_callback(GLFWwindow* window, int button, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
+
+// 对ImGUI进行构建
+void buildImGUI();
+// 是否使用imgui进行debug操作
+bool isDebug = false;
 
 
 // 设置窗口大小
@@ -43,6 +51,8 @@ Controller MainController(SCR_WIDTH, SCR_HEIGHT);
 
 int main()
 {
+	// 定义glsl的版本
+	const char* glsl_version = "#version 330 core";
 	// glfw的初始化
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -92,8 +102,21 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	// ----------------------设置 ImGUI------------------------------------
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	// 设置风格
+	ImGui::StyleColorsDark();
+	// 平台渲染绑定
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+
 	// 初始化控制器
 	MainController.Init();
+
+
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -108,15 +131,27 @@ int main()
 		// 进行属性的更新
 		MainController.Update();
 
+		// ------------开始ImGui frame------------------------
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		buildImGUI();
 
 		// ------
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+		
 		// 进行渲染
 		MainController.Render();
 	
+
+		//------------------------------渲染imGUI---------------------------------------
+		glDisable(GL_STENCIL_TEST);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		glEnable(GL_STENCIL_TEST);
+
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -124,10 +159,32 @@ int main()
 
 	// 要对资源进行释放
 
+
+	// 释放ImGui
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	glfwTerminate();
 	return 0;
 }
 
+// 在这里修改GUI
+void buildImGUI()
+{
+	// ------------创建ImGui--------------------------------
+	ImGui::Begin("Tool");
+	ImGui::Text("Welcome to this scence!");
+	ImGui::Checkbox("Debug", &isDebug);
+	if (isDebug)
+	{
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Enjoy debug!!");
+		ImGui::Checkbox("Whether to turn on the Stencil test", &MainController.isOpenStencilTest);
+	}
+	ImGui::End();
+
+	ImGui::Render();
+}
 
 // 摄像机的水平移动
 void processInput(GLFWwindow *window)

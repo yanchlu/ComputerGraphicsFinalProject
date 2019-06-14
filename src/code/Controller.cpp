@@ -99,7 +99,7 @@ void Controller::Init()
 	// 加载模板测试着色器
 	ResourceManager::LoadShader("./resources/shaders/stencil_testing.vs", "./resources/shaders/stencil_testing.fs",nullptr,"stencil");
 	stencilScale = 1.06;           // 模板测试的边框粗细
-	isOpenStencilTest = true;      // 开启模板测试
+	isOpenStencilTest = false;      // 开启模板测试
 
 }
 // 处理键盘事件
