@@ -151,12 +151,12 @@ void Controller::Render()
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// 将模型转换到光空间
 	for (int i = 0; i < Models.size(); i++)
 	{
 		Models[i].Draw(ResourceManager::GetShader("simpleLightShader"));
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// 重置视口
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
