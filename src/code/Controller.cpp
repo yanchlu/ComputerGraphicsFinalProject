@@ -46,7 +46,7 @@ void Controller::Init()
 
 	// 加载模型 
 	Model nano = ResourceManager::LoadModel("./resources/objects/NOVELO_SHEEP/NOVELO_SHEEP.obj","sheep");
-	nano.Position = glm::vec3(-3.0f, 0.0f, -2.0f);
+	nano.Position = glm::vec3(-3.0f, 1.0f, -2.0f);
 	nano.Size = glm::vec3(0.003f);
 	Models.push_back(nano);
 	
@@ -95,6 +95,12 @@ void Controller::Init()
 	Text text(SCR_WIDTH, SCR_HEIGHT);
 	maintext = text;
 	maintext.InitText();
+
+	// 加载模板测试着色器
+	ResourceManager::LoadShader("./resources/shaders/stencil_testing.vs", "./resources/shaders/stencil_testing.fs",nullptr,"stencil");
+	stencilScale = 1.06;           // 模板测试的边框粗细
+	isOpenStencilTest = true;      // 开启模板测试
+
 }
 // 处理键盘事件
 void Controller::ProcessKeyboradInput()
@@ -115,6 +121,9 @@ void Controller::Update()
 // 渲染物体
 void Controller::Render()
 {
+	// 关闭模板测试效果
+	glStencilMask(0x00);
+
 	// --------------------------------------对场景中物体进行光空间转换-----------------------------
 	// 首先计算光的深度图
 	mainlight.Render(ResourceManager::GetShader("simpleLightShader"));
@@ -151,7 +160,8 @@ void Controller::Render()
 
 	// 重置视口
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// --------------------------------------对场景中物体进行渲染-----------------------------
 	// 对场景着色器进行渲染
@@ -171,7 +181,7 @@ void Controller::Render()
 	glActiveTexture(GL_TEXTURE1);
 	mainlight.BindTexture();
 
-	//进行真正的渲染
+	// 进行平面真正的渲染
 	for (int i = 0; i < Planes.size(); i++)
 	{
 		Planes[i].Render(shader);
@@ -182,6 +192,19 @@ void Controller::Render()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, ResourceManager::GetTexture("wood"));
 
+
+	//--------------------------------------进行场景摆放物体的渲染---------------------
+	if (isOpenStencilTest)        // 进行模板测试的配置
+	{
+		Shader shaderSingleColor = ResourceManager::GetShader("stencil");
+		shaderSingleColor.use();
+		shaderSingleColor.setMat4("view", view);
+		shaderSingleColor.setMat4("projection", projection);
+
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+	}
+
 	for (int i = 0; i < Boxs.size(); i++)
 	{
 		Boxs[i].Render(shader);
@@ -190,11 +213,13 @@ void Controller::Render()
 		glBindVertexArray(0);
 	}
 
+	
 	for (int i = 0; i < Models.size(); i++)
 	{
 		Models[i].Draw(shader);
 	}
 
+	glStencilMask(0x00);
 	// -------------------------------渲染天空盒-------------------------------------------------------
 	// draw skybox as last
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
@@ -218,4 +243,33 @@ void Controller::Render()
 	Shader text = ResourceManager::GetShader("text");
 	maintext.RenderText(text, L"按下 W/A/S/D 键开始漫游", 25.0f, 62.0, 0.6f, glm::vec3(0.968f, 0.917f, 0.639f));
 	maintext.RenderText(text, L"拖动鼠标进行视角移动", 25.0f, 25.0, 0.6f, glm::vec3(0.968f, 0.917f, 0.639f));
+
+
+	// --------------------------------渲染模板测试--------------------------------------------------------
+	if (isOpenStencilTest)
+	{
+		// 在模板着色器中显示各个物体的边框
+		Shader shaderSingleColor = ResourceManager::GetShader("stencil");
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+		shaderSingleColor.use();
+
+		for (int i = 0; i < Boxs.size(); i++)
+		{
+			Boxs[i].Render(shaderSingleColor, stencilScale);     // 设置线条粗细
+			Boxs[i].BindVertexArray();
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(0);
+		}
+
+		for (int i = 0; i < Models.size(); i++)
+		{
+			Models[i].Draw(shaderSingleColor, stencilScale);
+		}
+
+		glBindVertexArray(0);
+		glStencilMask(0xFF);
+		glEnable(GL_DEPTH_TEST);
+	}
 }

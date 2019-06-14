@@ -56,7 +56,7 @@ public:
 	}
 
 	// draws the model, and thus all its meshes
-	void Draw(Shader shader)
+	void Draw(Shader shader,float scale = 0.0)
 	{	
 		// 设置着色器的属性
 		shader.use();
@@ -64,7 +64,10 @@ public:
 		model = glm::translate(model, Position);
 		// 只沿着Y轴旋转
 		model = glm::rotate(model, Rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, Size);
+		if (scale == 0.0f)
+			model = glm::scale(model, Size);
+		else
+			model = glm::scale(model, glm::vec3(Size.x * scale, Size.y * scale, Size.z * scale));
 		// 重新设置值
 		shader.setMat4("model", model);
 

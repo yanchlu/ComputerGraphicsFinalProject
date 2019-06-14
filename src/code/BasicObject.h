@@ -1,4 +1,4 @@
-#ifndef BASICOBJECT_H
+ï»¿#ifndef BASICOBJECT_H
 #define BASICOBJECT_H
 
 
@@ -9,28 +9,28 @@
 #include "Shader.h"
 #include "Camera.h"
 
-// ÔÚOpenGLÖĞ»ù´¡µÄÎïÌå
+// åœ¨OpenGLä¸­åŸºç¡€çš„ç‰©ä½“
 class BasicObject
 {
 public:
 
 	BasicObject(glm::vec3 position, float rotation, glm::vec3 size);
-	// °ó¶¨VAO
+	// ç»‘å®šVAO
 	void BindVertexArray();
 	// VAO
 	unsigned int VAO;
-	// ¶ÔÒ»¸öÆ½Ãæ½øĞĞ³õÊ¼»¯
+	// å¯¹ä¸€ä¸ªå¹³é¢è¿›è¡Œåˆå§‹åŒ–
 	void initPlaneVertices();
-	// ¶ÔÒ»¸öÕı·½Ìå½øĞĞ³õÊ¼»¯
+	// å¯¹ä¸€ä¸ªæ­£æ–¹ä½“è¿›è¡Œåˆå§‹åŒ–
 	void initCubeVertices();
-	// ÎïÌå¶Ô×ÅÉ«Æ÷½øĞĞÉèÖÃäÖÈ¾
-	void Render(Shader shader);
+	// ç‰©ä½“å¯¹ç€è‰²å™¨è¿›è¡Œè®¾ç½®æ¸²æŸ“
+	void Render(Shader shader, float scale = 0.0);
 
-	// ÎïÌåÎ»ÖÃ
+	// ç‰©ä½“ä½ç½®
 	glm::vec3   Position;
-	// ÎïÌåĞı×ª
+	// ç‰©ä½“æ—‹è½¬
 	float     Rotation;
-	// ÎïÌå´óĞ¡
+	// ç‰©ä½“å¤§å°
 	glm::vec3   Size;
 };
 

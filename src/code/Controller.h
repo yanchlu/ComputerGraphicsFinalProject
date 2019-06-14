@@ -39,6 +39,11 @@ public:
 	std::vector<BasicObject> Planes;
 	std::vector<BasicObject> Boxs;
 	std::vector<Model> Models;
+
+	// 模板测试的边框粗细应该大于1
+	float stencilScale;
+	// 是否开启模板测试
+	bool isOpenStencilTest;
 };
 
 #endif
